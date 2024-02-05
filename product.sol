@@ -48,7 +48,7 @@ contract Product{
                 break;
             }
         }
-        require(flag==0, "Product is duplicate");
+        require(flag==1, "Product is duplicate");
         hashproduct[index]= hashproduct[hashproduct.length-1];
         hashproduct.pop();
         emit verifyproductsuccess(productname);
