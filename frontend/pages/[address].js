@@ -58,7 +58,7 @@ const Detail = ({ Data }) => {
 
             var t;
 
-            fetch("http://localhost:8000/encrypt", {
+            fetch("https://counterfieiting.vercel.app/encrypt", {
                 method: 'POST',
                 body: JSON.stringify({ hash: hash }),
                 headers: {
