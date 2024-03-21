@@ -25,7 +25,7 @@ function Register({login, setLogin ,name, setName}) {
         e.preventDefault();
         
         const t= JSON.stringify(data);
-        fetch("http://localhost:8000/register", {
+        fetch("https://counterfieiting.vercel.app/register", {
             method:'POST',
             body:t,
             headers: {
