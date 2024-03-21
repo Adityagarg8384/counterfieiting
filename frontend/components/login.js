@@ -12,7 +12,7 @@ function Login({  login, setLogin ,name, setName}) {
 
     const SubmitForm = (e) => {
         e.preventDefault(); 
-        fetch("http://https://counterfieiting.vercel.app/login", {
+        fetch("https://counterfieiting.vercel.app/login", {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
