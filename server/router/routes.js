@@ -7,6 +7,9 @@ const router= express.Router();
 
 router.post("/login",login);
 router.post("/register", register);
+router.get("/", (req,res)=>{
+    res.json("Hello");
+})
 router.post("/encrypt", encrypt);
 
 module.exports=router;
