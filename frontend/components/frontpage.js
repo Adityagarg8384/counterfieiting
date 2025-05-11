@@ -6,119 +6,33 @@ import Link from 'next/link';
 
 function FrontPage() {
   return (
-    <Head>
-        <Main>
-            <Head1>
-            Experience uncertainty regarding the authenticity of your product?
-            </Head1>
-            <Subhead>
-            Rely on our professional services to confirm the originality of your goods with confidence.
-            </Subhead>
-            <Link href="/getdata">
-            <But>
-                Get Started
-            </But>
-            </Link>
-        </Main>
-        <Head2>
-           
-            <CustomImage src={picture} width={500} height={1000}></CustomImage>
-            
-        </Head2>
-    </Head>
+    <div className="flex justify-around items-center flex-col md:flex-row">
+      {/* Left Section */}
+      <div className="h-screen flex flex-col justify-start items-center max-w-[90%] md:max-w-[50%]">
+        <div className="mt-8 ml-24 text-white leading-none text-[3rem] md:text-[4rem]">
+          Experience uncertainty regarding the authenticity of your product?
+        </div>
+        <p className="mt-16 ml-8 md:ml-24 text-white text-[1rem] md:text-[1.5rem] mb-5 md:mb-10">
+          Rely on our professional services to confirm the originality of your goods with confidence.
+        </p>
+        <Link href="/getdata">
+          <button className="bg-[#e5f243] rounded-[5vh] p-[1vh] text-black inline-block border-none cursor-pointer w-[40vw] h-[5vh] text-[14px] md:w-auto md:h-auto md:text-base">
+            Get Started
+          </button>
+        </Link>
+      </div>
+      {/* Right Section */}
+      <div className="h-[80vh] flex flex-col justify-center items-center">
+        <Image 
+          src={picture} 
+          width={500} 
+          height={1000} 
+          alt="Picture"
+          className="w-[40vw] h-[70%] sm:w-[80vw] sm:h-[50%]"
+        />
+      </div>
+    </div>
   )
 }
-
-const Head = styled.div`
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-
-  @media only screen and (max-width: 430px) and (max-height: 932px) {
-    flex-direction: column;
-  }
-`;
-
-const Main = styled.div`
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-start;
-  align-items: center;
-  max-width: 50%;
-  // margin-top: 80px;
-
-  @media only screen and (max-width: 430px) and (max-height: 932px) {
-    max-width: 90%; /* Adjust maximum width for smaller screens */
-  }
-`;
-
-const Head1 = styled.div`
-  font-size: 4rem;
-  margin-top: 2rem;
-  color: white;
-  line-height: 1;
-  margin-left: 6rem;
-
-  @media only screen and (max-width: 431px) and (max-height: 933px) {
-    font-size: 3rem; /* Adjust font size for smaller screens */
-    margin-top: 2rem; /* Adjust margin top for smaller screens */
-    margin-left: 6rem;
-  }
-`;
-
-const Subhead = styled.p`
-  margin-top: 4rem;
-  font-size: 1.5rem;
-  color: white;
-  margin-bottom: 40px;
-  margin-left: 6rem;
-
-  @media only screen and (max-width: 431px) and (max-height: 933px) {
-    font-size: 1rem; /* Adjust font size for smaller screens */
-    margin-top: 4rem; /* Adjust margin top for smaller screens */
-    margin-bottom: 20px; /* Adjust margin bottom for smaller screens */
-    margin-left: 2rem;
-  }
-`;
-
-const But = styled.button`
-  border-radius: 5vh;
-  background-color: #e5f243;
-  // height: 6vh;
-  // width: 8vw;
-  padding: 1vh;
-  color: black;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  border-radius: 5vh;
-  border: none;
-  cursor: pointer;
-
-  @media only screen and (max-width: 430px) and (max-height: 932px) {
-    width: 40vw; /* Adjust width for smaller screens */
-    height: 5vh; /* Adjust height for smaller screens */
-    font-size: 14px; /* Adjust font size for smaller screens */
-  }
-`;
-
-const Head2 = styled.div`
-  height: 80vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
-
-const CustomImage = styled(Image)`
-  width: 40vw; /* Auto width */
-  height: 70%;
-
-  @media only screen and (max-width: 430px) and (max-height: 932px) {
-    width: 80vw; /* Adjust width for smaller screens */
-    height: 50%; /* Adjust height for smaller screens */
-  }
-`;
 
 export default FrontPage;

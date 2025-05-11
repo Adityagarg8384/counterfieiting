@@ -89,124 +89,44 @@ const verify = () => {
   }
 
   return (
-    <div>
-      <Head>
-        <Text>Verify</Text>
-      <Head2>
-        <Text2>Enter Product Name : </Text2>
-      <Input onChange={formhandler} value={product} placeholder="productname"></Input>
-      <RedButton onClick={getdata}>Getdata</RedButton>
-      </Head2>
-      
-      {
-        found === true ?
-          <Head3>
-            <Text2>Enter Hash : </Text2>
-            <Input placeholder="Hashcode" value={hash} onChange={formnewhandler}></Input>
-            <BlueButton onClick={Verifytask}>VerifyTask</BlueButton>
-          </Head3> :
-          <div></div>
-      }
-      </Head>
+    <div className="flex flex-col justify-start items-center h-screen bg-[#14161a]">
+    <h1 className="text-white text-[6vw] md:text-3xl mb-[5vh]">Verify</h1>
+    <div className="flex justify-center items-center">
+      <h1 className="text-base text-white mr-[1vw]">Enter Product Name :</h1>
+      <input
+        onChange={formhandler}
+        value={product}
+        placeholder="productname"
+        className="p-2 w-[70vw] md:w-[20vw] border-0 rounded-[5px] text-base bg-[#212631] text-white"
+      />
+      <button
+        onClick={getdata}
+        className="ml-2 bg-[#f44336] text-white py-2 px-5 border-0 rounded-[5px] cursor-pointer text-base font-bold transition-colors duration-300 hover:bg-[#d32f2f] focus:outline-none"
+      >
+        Getdata
+      </button>
     </div>
-
+    {found ? (
+      <div className="flex justify-center items-center mt-[20vh]">
+        <h1 className="text-base text-white mr-[1vw]">Enter Hash :</h1>
+        <input
+          placeholder="Hashcode"
+          value={hash}
+          onChange={formnewhandler}
+          className="p-2 w-[70vw] md:w-[20vw] border-0 rounded-[5px] text-base bg-[#212631] text-white"
+        />
+        <button
+          onClick={Verifytask}
+          className="ml-2 py-2 px-5 bg-[#007bff] text-white border-0 rounded-[5px] cursor-pointer text-base transition-colors duration-300 hover:bg-[#0056b3] focus:outline-none w-[50vw] md:w-auto"
+        >
+          VerifyTask
+        </button>
+      </div>
+    ) : (
+      <div></div>
+    )}
+  </div>
   )
 }
-
-const Head = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-start;
-  align-items: center;
-  height: 100vh;
-  background-color: #14161a;
-`;
-
-const Head2 = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Head3 = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20vh;
-`;
-
-const Text = styled.h1`
-  font-size: 3rem;
-  color: white;
-  margin-bottom: 5vh;
-
-  @media only screen and (max-width: 430px) and (max-height: 932px) {
-    font-size: 6vw; /* Adjust font size for smaller screens */
-  }
-`;
-
-const Text2 = styled.h1`
-  font-size: 1rem;
-  color: white;
-  margin-right: 1vw;
-`;
-
-const Input = styled.input`
-  padding: 10px;
-  width: 20vw;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  background-color: #212631;
-  color: white;
-
-  @media only screen and (max-width: 430px) and (max-height: 932px) {
-    width: 70vw; /* Adjust input width for smaller screens */
-  }
-`;
-
-const RedButton = styled.button`
-  background-color: #f44336;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #d32f2f;
-  }
-
-  &:focus {
-    outline: none;
-  }
-`;
-
-const BlueButton = styled.button`
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  // width: 10vw;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #0056b3;
-  }
-
-  &:focus {
-    outline: none;
-  }
-
-  @media only screen and (max-width: 430px) and (max-height: 932px) {
-    width: 50vw; /* Adjust button width for smaller screens */
-  }
-`;
 
 export default verify;

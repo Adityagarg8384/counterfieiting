@@ -5,9 +5,9 @@ import FrontPage from '@/components/frontpage';
 
 const index = () => {
   return (
-    <Div>
-      <FrontPage/>
-    </Div>
+    <div className="bg-[#25273d] h-screen">
+      <FrontPage />
+    </div>
   )
 }
 

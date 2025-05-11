@@ -5,19 +5,10 @@ import styled from 'styled-components';
 
 const Formcreate = () => {
   return (
-    <Container>
-      <Form/>
-    </Container>
-    
+    <div className="flex flex-col items-center justify-center h-screen bg-[#14161a]">
+      <Form />
+    </div>
   )
 }
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-color: #14161a; /* Background color */
-`;
 export default Formcreate;

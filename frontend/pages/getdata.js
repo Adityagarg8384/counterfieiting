@@ -9,7 +9,7 @@ const getdata = () => {
 
     const [data, setData] = useState([]);
     const [found, setFound] = useState(false);
-    const [load, setLoad]= useState(false);
+    const [load, setLoad] = useState(false);
 
     const get = async () => {
         setLoad(true);
@@ -52,7 +52,7 @@ const getdata = () => {
                 productAddress: e.args.productaddress,
             };
         }));
-        
+
 
         setData(allData);
         setFound(true);
@@ -60,122 +60,38 @@ const getdata = () => {
     }
 
     return (
-        <Head1>
-            <Head2>
-                <Head3>
-                    <Button onClick={get}>
-                        {load && <i className='fa fa-refresh fa-spin'></i>}
-                        
-                        <h>Get data</h>
-                        </Button>
+        <div className="w-full h-full flex justify-center items-baseline">
+            <div className="mt-2 w-[90%] inline-block border border-black rounded-md md:w-[60%]">
+                <div className="flex flex-col justify-center">
+                    <button
+                        onClick={get}
+                        className="my-10 mx-auto mb-5 block w-[40%] py-2 px-5 text-sm font-bold text-center bg-green-500 text-white border-2 border-green-500 rounded cursor-pointer hover:bg-green-600 active:bg-green-700 md:w-[20%]"
+                    >
+                        {load && <i className="fa fa-refresh fa-spin"></i>}
+                        <span>Get data</span>
+                    </button>
                     <div>
-                        {
-                            found === false ?
-                                <h2>Click the button to get data</h2>
-                                :
-                                <div>
-                                    {data.map((e, index) => (
-                                        <Link key={index} passHref href={'/' + e.productAddress}>
-                                            <Task >
-                                                <H3 >Product :   {e.productName}  </H3>
-                                                <p>Product Company:   {e.productCompany}</p>
-                                            </Task>
-                                        </Link>
-                                    ))}
-                                </div>
-                        }
+                        {!found ? (
+                            <h2 className="text-center">Click the button to get data</h2>
+                        ) : (
+                            <div>
+                                {data.map((e, index) => (
+                                    <Link key={index} href={'/' + e.productAddress} passHref>
+                                        <div className="bg-gray-200 m-1 p-2 cursor-pointer">
+                                            <h3 className="text-base flex items-center justify-between font-bold">
+                                                Product: {e.productName}
+                                            </h3>
+                                            <p>Product Company: {e.productCompany}</p>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        )}
                     </div>
-                </Head3>
-            </Head2>
-        </Head1>
+                </div>
+            </div>
+        </div>
     );
 }
-
-const Head1 = styled.div`
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: baseline;
-`;
-
-const Head2 = styled.div`
-    margin-top: 10px;
-    width: 90%;
-    display: inline-block;
-    border: 0.5px solid black;
-    border-radius: 8px;
-
-    @media (min-width: 768px) {
-        width: 60%; /* Adjust width for desktop */
-    }
-`;
-
-const Head3 = styled.div`
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-`;
-
-const Button = styled.button`
-    margin: 10% auto 5%;
-    display: block;
-    height: 10%;
-    width: 40%;
-    padding: 10px 20px;
-    font-size: 14px;
-    font-weight: bold;
-    text-align: center;
-    text-decoration: none;
-    background-color: #4CAF50; /* Green */
-    color: white;
-    border: 2px solid #4CAF50;
-    border-radius: 5px;
-    cursor: pointer;
-
-    :hover {
-        background-color: #45a049; 
-    }
-
-    :active {
-        background-color: #3e8e41;
-        border-color: #3e8e41;
-    }
-
-    @media (min-width: 768px) {
-        width: 20%; /* Adjust width for desktop */
-    }
-`;
-
-const Task = styled.div`
-    background: #f4f4f4;
-    margin: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
-`;
-
-const H3 = styled.h3`
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-weight: bold;
-`;
-
-// Media queries for 430x932 screen
-// @media (max-width: 430px) and (max-height: 932px) {
-//     ${Head1} {
-//         align-items: center;
-//     }
-
-//     ${Head2} {
-//         width: 80%;
-//     }
-
-//     ${Button} {
-//         margin: 20% auto 10%;
-//         width: 60%;
-//     }
-// }
 
 export default getdata;

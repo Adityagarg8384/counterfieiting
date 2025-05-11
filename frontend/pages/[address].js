@@ -6,454 +6,271 @@ import styled from 'styled-components';
 import bcrypt from "bcryptjs";
 
 const Detail = ({ Data }) => {
-    const [hash, setHash] = useState(null);
-    const [change, setChange] = useState(false);
-    const [data, setData] = useState();
-    const [found, setFound] = useState(false);
-    const [address, setAddress] = useState();
-    const [encryptedhHash, setEncryptedHash] = useState("");
+  const [hash, setHash] = useState(null);
+  const [change, setChange] = useState(false);
+  const [data, setData] = useState();
+  const [found, setFound] = useState(false);
+  const [address, setAddress] = useState();
+  const [encryptedhHash, setEncryptedHash] = useState("");
 
-    useEffect(() => {
-        const Request = async () => {
-            await window.ethereum.request({ method: 'eth_requestAccounts' });
-            const web3provider = new ethers.providers.Web3Provider(window.ethereum);
-            const signer = web3provider.getSigner();
-            const address = await signer.getAddress();
+  useEffect(() => {
+    const Request = async () => {
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+      const web3provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = web3provider.getSigner();
+      const address = await signer.getAddress();
 
-            const provider = new ethers.providers.JsonRpcProvider(
-                process.env.NEXT_PUBLIC_RPC_URL,
-            )
+      const provider = new ethers.providers.JsonRpcProvider(
+        process.env.NEXT_PUBLIC_RPC_URL,
+      )
 
-            const contract = new ethers.Contract(
-                Data.address,
-                Product.abi,
-                provider,
-            )
+      const contract = new ethers.Contract(
+        Data.address,
+        Product.abi,
+        provider,
+      )
 
-            const getFile = contract.filters.addproductsuccess();
-            const dataFile = await contract.queryFilter(getFile);
-            if (dataFile.length == 0) {
+      const getFile = contract.filters.addproductsuccess();
+      const dataFile = await contract.queryFilter(getFile);
+      if (dataFile.length == 0) {
 
-            }
-            else {
-                setData(dataFile[dataFile.length - 1].args.hashproduct);
+      }
+      else {
+        setData(dataFile[dataFile.length - 1].args.hashproduct);
 
-            }
-        }
-        Request();
-    }, [change]);
-
-    const Addhash = async () => {
-        try {
-            await window.ethereum.request({ method: 'eth_requestAccounts' });
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
-            const signer = provider.getSigner();
-
-
-            const contract = new ethers.Contract(
-                Data.address,
-                Product.abi,
-                signer,
-            )
-
-            var t;
-
-            fetch("https://counterfieiting.vercel.app/encrypt", {
-                method: 'POST',
-                body: JSON.stringify({ hash: hash }),
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-            }).then((res) => {
-                console.log("Hello world");
-                return res.json();
-            }).catch((err) => {
-                console.log(err);
-            })
-                .then(async (res) => {
-                    console.log(res);
-                    console.log(res.encryptedhash);
-                    t = res.encryptedhash;
-                    setEncryptedHash(t);
-
-                    console.log(t);
-                    console.log(encryptedhHash);
-
-
-                    const doTask = await contract.addproduct(Data.productName, t);
-
-                    await doTask.wait();
-
-                    setChange(true);
-                    console.log(res);
-                })
-                .catch((err) => {
-                    console.log(err);
-                })
-
-
-
-
-        }
-        catch (err) {
-
-            console.log(err);
-        }
+      }
     }
+    Request();
+  }, [change]);
 
-    const HashHandler = (e) => {
-
-        const b = e.target.value;
-        setHash(b);
-    }
-
-    const getHash = async () => {
-        await window.ethereum.request({ method: 'eth_requestAccounts' });
-        const web3provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = web3provider.getSigner();
-        const address = await signer.getAddress();
-
-        const provider = new ethers.providers.JsonRpcProvider(
-            process.env.NEXT_PUBLIC_RPC_URL,
-        )
+  const Addhash = async () => {
+    try {
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
 
 
-        const contract = new ethers.Contract(
-            process.env.NEXT_PUBLIC_ADDRESS,
-            ProductFactory.abi,
-            provider,
-        )
+      const contract = new ethers.Contract(
+        Data.address,
+        Product.abi,
+        signer,
+      )
 
-        // console.log(product);
+      var t;
 
-        const getFile = contract.filters.productcreated(Data.productName);
-        const dataFile = await contract.queryFilter(getFile);
+      fetch("https://counterfieiting.vercel.app/encrypt", {
+        method: 'POST',
+        body: JSON.stringify({ hash: hash }),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+      }).then((res) => {
+        console.log("Hello world");
+        return res.json();
+      }).catch((err) => {
+        console.log(err);
+      })
+        .then(async (res) => {
+          console.log(res);
+          console.log(res.encryptedhash);
+          t = res.encryptedhash;
+          setEncryptedHash(t);
 
-        setAddress(dataFile[0].args.productaddress);
+          console.log(t);
+          console.log(encryptedhHash);
 
 
-        await window.ethereum.request({ method: 'eth_requestAccounts' });
-        const web3provide = new ethers.providers.Web3Provider(window.ethereum);
-        const signe = web3provide.getSigner();
+          const doTask = await contract.addproduct(Data.productName, t);
+
+          await doTask.wait();
+
+          setChange(true);
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
 
 
-        const contrac = new ethers.Contract(
-            address,
-            Product.abi,
-            signe
-        )
-        const getFil = contrac.filters.verifyproductsuccess();
-        const addFile = await contract.queryFilter(getFil);
 
-        setFound(true);
 
     }
-    return (
-        <Head1>
-            <Head3>
-                <Text>{Data.productName}</Text>
-            </Head3>
+    catch (err) {
 
-            <Head5>
-                <Head4>
-                    <InputWrapper>
-                        <InputName>Hash:</InputName>
-                        <Input
-                            type="text"
-                            name="input3"
-                            value={hash}
-                            onChange={HashHandler}
-                        />
-                    </InputWrapper>
-                    <RedButton onClick={Addhash}>AddHash</RedButton>
-                </Head4>
-                
-            </Head5>
-            <Head7>
-            {encryptedhHash === "" ? <></> : <h>{encryptedhHash}</h>}
-            </Head7>
-            <BlueButton onClick={getHash}>GetHash</BlueButton>
-            <Head2>
-                {found === true ?
-                    <Head6>
-                        {data.map((e) => {
-                            return (
-                                <Task >
-                                    <H3> {e} </H3>
-                                </Task>
+      console.log(err);
+    }
+  }
 
-                            )
-                        })}
-                        <Text2>The Hash may be inconsistent. Add a new hash to make it consistent</Text2>
-                    </Head6>
-                    :
-                    <div></div>
-                }
-            </Head2>
+  const HashHandler = (e) => {
 
-        </Head1>
+    const b = e.target.value;
+    setHash(b);
+  }
+
+  const getHash = async () => {
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const web3provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = web3provider.getSigner();
+    const address = await signer.getAddress();
+
+    const provider = new ethers.providers.JsonRpcProvider(
+      process.env.NEXT_PUBLIC_RPC_URL,
     )
+
+
+    const contract = new ethers.Contract(
+      process.env.NEXT_PUBLIC_ADDRESS,
+      ProductFactory.abi,
+      provider,
+    )
+
+    // console.log(product);
+
+    const getFile = contract.filters.productcreated(Data.productName);
+    const dataFile = await contract.queryFilter(getFile);
+
+    setAddress(dataFile[0].args.productaddress);
+
+
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const web3provide = new ethers.providers.Web3Provider(window.ethereum);
+    const signe = web3provide.getSigner();
+
+
+    const contrac = new ethers.Contract(
+      address,
+      Product.abi,
+      signe
+    )
+    const getFil = contrac.filters.verifyproductsuccess();
+    const addFile = await contract.queryFilter(getFil);
+
+    setFound(true);
+
+  }
+  return (
+    <div className="bg-[#14161a] h-screen flex flex-col justify-start items-center">
+      {/* Product Name */}
+      <div className="flex justify-center items-center mt-8 md:mt-8">
+        <h1 className="text-white text-[8vw] md:text-[6vw]">{Data.productName}</h1>
+      </div>
+
+      {/* Input & AddHash Button */}
+      <div className="flex justify-center items-center mt-8">
+        <div className="flex justify-center items-center mt-8 bg-[#191b21] w-[90vw] md:w-[60vw] md:h-[10vw]">
+          <div className="flex justify-center items-center">
+            <div className="mr-2 text-white text-[3vw] md:text-base">Hash:</div>
+            <input
+              type="text"
+              name="input3"
+              value={hash || ""}
+              onChange={HashHandler}
+              className="p-2 w-[80vw] md:w-[20vw] border-0 rounded text-base bg-[#212631] text-white"
+            />
+          </div>
+          <button
+            onClick={Addhash}
+            className="bg-[#f44336] text-white py-1 px-2 ml-[5vw] transition-colors duration-300 hover:bg-[#d32f2f] focus:outline-none md:py-2 md:px-5 md:ml-[3vw] md:text-base"
+          >
+            AddHash
+          </button>
+        </div>
+      </div>
+
+      {/* Encrypted Hash Display */}
+      <div className="text-white mt-4">
+        {encryptedhHash !== "" && <span>{encryptedhHash}</span>}
+      </div>
+
+      {/* GetHash Button */}
+      <button
+        onClick={getHash}
+        className="mt-8 py-1 px-2 bg-[#007bff] text-white border-0 rounded text-[4vw] ml-[3rem] w-[70vw] transition-colors duration-300 hover:bg-[#0056b3] focus:outline-none md:py-2 md:px-5 md:text-base md:ml-[4rem] md:w-[20vw]"
+      >
+        GetHash
+      </button>
+
+      {/* Display Task Data */}
+      <div className="w-screen flex justify-center items-center mt-2">
+        {found ? (
+          <div className="p-[4vw] w-[20rem] rounded-[2vw] bg-[#191b21] flex flex-col justify-center items-center md:p-[0.2rem] md:w-[44vw] md:rounded-[1vw]">
+            {data &&
+              data.map((e, i) => (
+                <div key={i} className="w-[40vw] bg-[#f4f4f4] py-2 px-5 cursor-pointer break-words sm:w-[20rem]">
+                  <h3 className="flex items-center justify-between font-bold break-words text-[0.5rem] md:text-base">
+                    {e}
+                  </h3>
+                </div>
+              ))}
+            <h1 className="text-[4vw] text-white md:text-base">
+              The Hash may be inconsistent. Add a new hash to make it consistent
+            </h1>
+          </div>
+        ) : (
+          <div></div>
+        )}
+      </div>
+    </div>
+  )
 }
 
 export async function getStaticPaths() {
-    const provider = new ethers.providers.JsonRpcProvider(
-        process.env.NEXT_PUBLIC_RPC_URL,
-    )
+  const provider = new ethers.providers.JsonRpcProvider(
+    process.env.NEXT_PUBLIC_RPC_URL,
+  )
 
-    const contract = new ethers.Contract(
-        process.env.NEXT_PUBLIC_ADDRESS,
-        ProductFactory.abi,
-        provider,
-    )
+  const contract = new ethers.Contract(
+    process.env.NEXT_PUBLIC_ADDRESS,
+    ProductFactory.abi,
+    provider,
+  )
 
-    const getAllProducts = contract.filters.productcreated();
-    const AllProducts = await contract.queryFilter(getAllProducts);
+  const getAllProducts = contract.filters.productcreated();
+  const AllProducts = await contract.queryFilter(getAllProducts);
 
 
-    return {
-        paths: AllProducts.map((e) => ({
-            params: {
-                address: e.args.productaddress.toString() || null,
-            }
-        })),
-        fallback: "blocking",
-    }
+  return {
+    paths: AllProducts.map((e) => ({
+      params: {
+        address: e.args.productaddress.toString() || null,
+      }
+    })),
+    fallback: "blocking",
+  }
 }
 
 export async function getStaticProps(context) {
 
-    const provider = new ethers.providers.JsonRpcProvider(
-        process.env.NEXT_PUBLIC_RPC_URL
-    )
+  const provider = new ethers.providers.JsonRpcProvider(
+    process.env.NEXT_PUBLIC_RPC_URL
+  )
 
-    const contract = new ethers.Contract(
-        context.params.address,
-        Product.abi,
-        provider,
-    )
+  const contract = new ethers.Contract(
+    context.params.address,
+    Product.abi,
+    provider,
+  )
 
-    const productName = await contract.ProductName();
-    const ImageUri = await contract.ImageUri();
-    // const productOwner= await contract.ProductOwner();
-    const address = context.params.address;
+  const productName = await contract.ProductName();
+  const ImageUri = await contract.ImageUri();
+  // const productOwner= await contract.ProductOwner();
+  const address = context.params.address;
 
 
-    const Data = {
-        productName,
-        ImageUri,
-        address,
-    }
-    console.log(Data);
-    return {
-        props: {
-            Data,
-        },
-        revalidate: 10,
-    }
+  const Data = {
+    productName,
+    ImageUri,
+    address,
+  }
+  console.log(Data);
+  return {
+    props: {
+      Data,
+    },
+    revalidate: 10,
+  }
 
 }
-
-const Text = styled.h1`
-  font-size: 6vw;
-  color: white;
-
-  @media (max-width: 430px) {
-    font-size: 8vw;
-  }
-`;
-
-const Text2 = styled.h1`
-  font-size: 1rem;
-  color: white;
-
-  @media (max-width: 430px) {
-    font-size: 4vw;
-  }
-`;
-
-const Head7= styled.div`
-color:white;
-`
-
-const Head1 = styled.div`
-  background-color: #14161a;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  align-items: center;
-`;
-
-const Head3 = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 2rem;
-
-  @media (max-width: 430px) {
-    margin-top: 10vw;
-  }
-`;
-
-const Head5 = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Head4 = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 2rem;
-  background-color: #191b21;
-  width: 60vw;
-  height: 10vw;
-
-  @media (max-width: 430px) {
-    margin-top: 15vw;
-    width: 90vw;
-  }
-`;
-
-const InputWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const InputName = styled.div`
-  margin-right: 10px;
-  color: white;
-  font-size: 1rem;
-
-  @media (max-width: 430px) {
-    font-size: 3vw;
-  }
-`;
-
-const Head2 = styled.div`
-  width: 100vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 2vw;
-`;
-
-const Input = styled.input`
-  padding: 10px;
-  width: 20vw;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  background-color: #212631;
-  color: white;
-
-  @media (max-width: 430px) {
-    width: 80vw;
-  }
-`;
-
-const RedButton = styled.button`
-  background-color: #f44336;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  margin-left: 3vw;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #d32f2f;
-  }
-
-  &:focus {
-    outline: none;
-  }
-
-  @media (max-width: 430px) {
-    font-size: 4vw;
-    padding: 5px 10px;
-    margin-left: 5vw;
-  }
-`;
-
-const BlueButton = styled.button`
-  margin-top: 2rem;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-left: 4rem;
-  width: 20vw;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #0056b3;
-  }
-
-  &:focus {
-    outline: none;
-  }
-
-  @media (max-width: 431px) {
-    font-size: 4vw;
-    padding: 5px 10px;
-    margin-left: 3rem;
-    width: 70vw;
-  }
-`;
-
-const Task = styled.div`
-  width: 40vw;
-  background-color: #f4f4f4;
-//   margin: 2px;
-  padding: 10px 20px;
-  cursor: pointer;
-  overflow-wrap: break-word;
-
-  @media (max-width: 431px) {
-    width: 20rem;
-  }
-`;
-
-const H3 = styled.h3`
-//   font-size: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-weight: bold;
-  align: center;
-  overflow-wrap: break;
-  font-size: 1rem;
-  @media (max-width: 431px) {
-    font-size: 0.5rem;
-  }
-`;
-
-const Head6 = styled.div`
-  padding: 0.2rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  width: 44vw;
-  border-radius: 1vw;
-  background-color: #191b21;
-  
-
-  @media (max-width: 431px) {
-    padding: 4vw;
-    width: 20rem;
-    border-radius: 2vw;
-  }
-`;
 
 export default Detail;

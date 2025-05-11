@@ -1,18 +1,11 @@
-import React from 'react'
-import styled from 'styled-components';
+import React from 'react';
 
 const LeftNavbar = () => {
   return (
-    <Head>Counterfeiting</Head>
-  )
-}
-
-const Head= styled.div`
-font-weight:bold;
-font-size: 30px;
-margin-left: 10px;
-font-family:'Poppins';
-color:white;
-`
+    <div className="font-bold text-3xl ml-2 font-poppins text-white">
+      Counterfeiting
+    </div>
+  );
+};
 
 export default LeftNavbar;
