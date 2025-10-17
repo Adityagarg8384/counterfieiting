@@ -1,6 +1,6 @@
 import { Inngest } from "inngest";
 import dbconnect from "./database";
-import { User } from "./models/models";
+import { User } from "./models";
 
 export const inngest = new Inngest({ id: "Counterfiet" });
 
