@@ -4,6 +4,9 @@ import Layout from "@/components/layout";
 import { LoginProvider } from "@/context/logincontex";
 import { AppContextProvider } from "@/context/AppContext";
 import { useState } from "react";
+import { ClerkProvider } from "@clerk/nextjs";
+import { Provider } from "react-redux";
+import store from "@/redux/store";
 
 export default function App({ Component, pageProps }) {
   const [login, setLogin] = useState(true);
@@ -25,10 +28,14 @@ export default function App({ Component, pageProps }) {
     <div>
       {/* <ClerkProvider> */}
       <AppContextProvider>
-        <LoginProvider value={{ login, setLogintrue, setLoginfalse, name, setNewName }}>
-          {login && <Layout login={login} setLogin={setLoginfalse} name={name} setName={setNewName} />}
-          <Component {...pageProps} login={login} setLogin={setLogintrue} name={name} setName={setNewName} />
-        </LoginProvider>
+        <Provider store={store}>
+          <ClerkProvider>
+            <LoginProvider value={{ login, setLogintrue, setLoginfalse, name, setNewName }}>
+              {login}
+              <Component {...pageProps} login={login} setLogin={setLogintrue} name={name} setName={setNewName} />
+            </LoginProvider>
+          </ClerkProvider>
+        </Provider>
       </AppContextProvider>
       {/* </ClerkProvider> */}
       {/* </Layout> */}

@@ -1,4 +1,4 @@
-const mongoose=require("mongoose");
+import mongoose from "mongoose";
 
 const UserSchema= new mongoose.Schema({
     _id: {type: String, required: true},
@@ -8,4 +8,6 @@ const UserSchema= new mongoose.Schema({
     cartitems: {type: Object, default: {}}
 }, {minimize: false})
 
-module.exports= mongoose.model("User", UserSchema);
+// module.exports= mongoose.model("User", UserSchema);
+const User= mongoose.model("User", UserSchema);
+export default User;

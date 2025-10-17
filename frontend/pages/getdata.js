@@ -4,6 +4,7 @@ import ethers from 'ethers';
 import ProductFactory from '../artifacts/contracts/Campaigns.sol/ProductFactory';
 import Product from '../artifacts/contracts/Campaigns.sol/Product';
 import Link from 'next/link';
+import Navbar2 from '@/components/navbar2';
 
 const getdata = () => {
 
@@ -60,33 +61,36 @@ const getdata = () => {
     }
 
     return (
-        <div className="w-full h-full flex justify-center items-baseline">
-            <div className="mt-2 w-[90%] inline-block border border-black rounded-md md:w-[60%]">
-                <div className="flex flex-col justify-center">
-                    <button
-                        onClick={get}
-                        className="my-10 mx-auto mb-5 block w-[40%] py-2 px-5 text-sm font-bold text-center bg-green-500 text-white border-2 border-green-500 rounded cursor-pointer hover:bg-green-600 active:bg-green-700 md:w-[20%]"
-                    >
-                        {load && <i className="fa fa-refresh fa-spin"></i>}
-                        <span>Get data</span>
-                    </button>
-                    <div>
-                        {!found ? (
-                            <h2 className="text-center">Click the button to get data</h2>
-                        ) : (
-                            <div>
-                                {data.map((e, index) => (
-                                    <Link key={index} href={'/' + e.productAddress} passHref>
-                                        <div className="bg-gray-200 m-1 p-2 cursor-pointer">
-                                            <h3 className="text-base flex items-center justify-between font-bold">
-                                                Product: {e.productName}
-                                            </h3>
-                                            <p>Product Company: {e.productCompany}</p>
-                                        </div>
-                                    </Link>
-                                ))}
-                            </div>
-                        )}
+        <div>
+            <Navbar2 />
+            <div className="w-full h-full flex justify-center items-baseline">
+                <div className="mt-2 w-[90%] inline-block border border-black rounded-md md:w-[60%]">
+                    <div className="flex flex-col justify-center">
+                        <button
+                            onClick={get}
+                            className="my-10 mx-auto mb-5 block w-[40%] py-2 px-5 text-sm font-bold text-center bg-green-500 text-white border-2 border-green-500 rounded cursor-pointer hover:bg-green-600 active:bg-green-700 md:w-[20%]"
+                        >
+                            {load && <i className="fa fa-refresh fa-spin"></i>}
+                            <span>Get data</span>
+                        </button>
+                        <div>
+                            {!found ? (
+                                <h2 className="text-center">Click the button to get data</h2>
+                            ) : (
+                                <div>
+                                    {data.map((e, index) => (
+                                        <Link key={index} href={'/' + e.productAddress} passHref>
+                                            <div className="bg-gray-200 m-1 p-2 cursor-pointer">
+                                                <h3 className="text-base flex items-center justify-between font-bold">
+                                                    Product: {e.productName}
+                                                </h3>
+                                                <p>Product Company: {e.productCompany}</p>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

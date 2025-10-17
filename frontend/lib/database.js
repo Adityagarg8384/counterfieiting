@@ -1,11 +1,8 @@
-require("dotenv").config();
-
-const mongoose = require("mongoose");
-const MONGO_URI = process.env.MONGO_URI;
-
+import mongoose from "mongoose";
+const MONGO_URI= process.env.MONGO_URI;
 
 const dbconnect = () => {
-  return mongoose.connect(MONGO_URI)
+  mongoose.connect(MONGO_URI)
     .then(() => {
       console.log("Connection has been made successfully");
     })
@@ -15,4 +12,6 @@ const dbconnect = () => {
     });
 };
 
-module.exports = dbconnect;
+
+export default dbconnect;
+// module.exports = dbconnect;
