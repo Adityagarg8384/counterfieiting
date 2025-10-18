@@ -415,50 +415,127 @@ const Detail = ({ Data }) => {
   );
 };
 
-// Static methods remain same
-export async function getStaticPaths() {
-  const provider = new ethers.providers.JsonRpcProvider(
-    process.env.NEXT_PUBLIC_RPC_URL
-  );
-  const contract = new ethers.Contract(
-    process.env.NEXT_PUBLIC_ADDRESS,
-    ProductFactory.abi,
-    provider
-  );
-  const filter = contract.filters.productcreated();
-  const allProducts = await contract.queryFilter(filter);
+// // Static methods remain same
+// export async function getStaticPaths() {
+//   const provider = new ethers.providers.JsonRpcProvider(
+//     process.env.NEXT_PUBLIC_RPC_URL
+//   );
+//   const contract = new ethers.Contract(
+//     process.env.NEXT_PUBLIC_ADDRESS,
+//     ProductFactory.abi,
+//     provider
+//   );
+//   const filter = contract.filters.productcreated();
+//   const allProducts = await contract.queryFilter(filter);
 
-  return {
-    paths: allProducts.map((e) => ({
-      params: { address: e.args.productaddress.toString() },
-    })),
-    fallback: "blocking",
-  };
+//   return {
+//     paths: allProducts.map((e) => ({
+//       params: { address: e.args.productaddress.toString() },
+//     })),
+//     fallback: "blocking",
+//   };
+// }
+
+// export async function getStaticProps(context) {
+//   const provider = new ethers.providers.JsonRpcProvider(
+//     process.env.NEXT_PUBLIC_RPC_URL
+//   );
+//   const contract = new ethers.Contract(
+//     context.params.address,
+//     Product.abi,
+//     provider
+//   );
+
+//   const productName = await contract.ProductName();
+//   const ImageUri = await contract.ImageUri();
+
+//   return {
+//     props: {
+//       Data: {
+//         productName,
+//         ImageUri,
+//         address: context.params.address,
+//       },
+//     },
+//     revalidate: 10,
+//   };
+// }
+
+export async function getStaticPaths() {
+  const rpc = process.env.NEXT_PUBLIC_RPC_URL;
+  const factoryAddress = process.env.NEXT_PUBLIC_ADDRESS;
+
+  if (!rpc || !factoryAddress) {
+    // If env not set, return empty paths so build doesn't crash.
+    console.warn("Missing NEXT_PUBLIC_RPC_URL or NEXT_PUBLIC_ADDRESS — returning no static paths.");
+    return {
+      paths: [],
+      fallback: "blocking",
+    };
+  }
+
+  try {
+    const provider = new ethers.providers.JsonRpcProvider(rpc);
+    const factoryContract = new ethers.Contract(factoryAddress, ProductFactory.abi, provider);
+
+    const logs = await factoryContract.queryFilter(factoryContract.filters.productcreated());
+    const addresses = Array.from(
+      new Set(
+        logs
+          .map((l) => l.args?.productaddress?.toString())
+          .filter((a) => a && ethers.utils.isAddress(a))
+      )
+    );
+
+    return {
+      paths: addresses.map((addr) => ({ params: { address: addr } })),
+      fallback: "blocking",
+    };
+  } catch (err) {
+    console.error("getStaticPaths error:", err);
+    return {
+      paths: [],
+      fallback: "blocking",
+    };
+  }
 }
 
+// ---------- SAFE getStaticProps ----------
 export async function getStaticProps(context) {
-  const provider = new ethers.providers.JsonRpcProvider(
-    process.env.NEXT_PUBLIC_RPC_URL
-  );
-  const contract = new ethers.Contract(
-    context.params.address,
-    Product.abi,
-    provider
-  );
+  const rpc = process.env.NEXT_PUBLIC_RPC_URL;
+  const address = context?.params?.address;
 
-  const productName = await contract.ProductName();
-  const ImageUri = await contract.ImageUri();
+  // Validate
+  if (!address || !ethers.utils.isAddress(address)) {
+    console.warn("Invalid or missing address param:", address);
+    return { notFound: true, revalidate: 10 };
+  }
+  if (!rpc) {
+    throw new Error("Missing NEXT_PUBLIC_RPC_URL in environment. Set it in .env.local or your deployment settings.");
+  }
 
-  return {
-    props: {
-      Data: {
-        productName,
-        ImageUri,
-        address: context.params.address,
-      },
-    },
-    revalidate: 10,
-  };
+  try {
+    const provider = new ethers.providers.JsonRpcProvider(rpc);
+    const contract = new ethers.Contract(address, Product.abi, provider);
+
+    const productName = await contract.ProductName();
+    const ImageUri = await contract.ImageUri();
+
+    const Data = {
+      productName: productName ?? null,
+      ImageUri: ImageUri ?? null,
+      address,
+    };
+
+    return {
+      props: { Data },
+      revalidate: 10,
+    };
+  } catch (err) {
+    console.error("getStaticProps error for address", address, err);
+    // Don't crash the build — return notFound so Next can handle it gracefully.
+    return { notFound: true, revalidate: 10 };
+  }
 }
 
 export default Detail;
