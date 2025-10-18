@@ -14,11 +14,15 @@ import React from "react";
 const Product = () => {
 
     // const { id } = useParams();
-    // const router = useRouter();
+    const newrouter = useRouter();
     
 
     const { products, router, addToCart } = useAppContext()
-    const { id } = router.query;
+    const { id } = newrouter.query;
+
+    // useEffect(()=>{
+    //     console.log("Product ID:", id);
+    // })
 
     const [mainImage, setMainImage] = useState(null);
     const [productData, setProductData] = useState(null);
