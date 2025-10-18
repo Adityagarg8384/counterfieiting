@@ -274,3 +274,191 @@
 // }
 
 // export default Detail;
+
+import React, { useEffect, useState } from "react";
+import { ethers } from "ethers";
+import ProductFactory from "../artifacts/contracts/Campaigns.sol/ProductFactory.json";
+import Product from "../artifacts/contracts/Campaigns.sol/Product.json";
+
+const Detail = ({ Data }) => {
+  const [hash, setHash] = useState("");
+  const [encryptedHash, setEncryptedHash] = useState("");
+  const [data, setData] = useState([]);
+  const [found, setFound] = useState(false);
+
+  // ✅ Fetch last added product hash
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!Data?.address) return;
+
+        const provider = new ethers.providers.JsonRpcProvider(
+          process.env.NEXT_PUBLIC_RPC_URL
+        );
+        const contract = new ethers.Contract(Data.address, Product.abi, provider);
+
+        const filter = contract.filters.addproductsuccess();
+        const logs = await contract.queryFilter(filter);
+
+        if (logs.length > 0) {
+          const latest = logs[logs.length - 1].args.hashproduct;
+          setData([latest]);
+        }
+      } catch (err) {
+        console.error("Error fetching product:", err);
+      }
+    };
+    fetchData();
+  }, [Data]);
+
+  // ✅ Add hash to blockchain
+  const handleAddHash = async () => {
+    try {
+      if (!hash) {
+        alert("Enter a hash first!");
+        return;
+      }
+
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+
+      const contract = new ethers.Contract(Data.address, Product.abi, signer);
+
+      // Encrypt hash using backend
+      const res = await fetch("https://counterfieiting.vercel.app/encrypt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ hash }),
+      });
+
+      const result = await res.json();
+      const encrypted = result.encryptedhash;
+      setEncryptedHash(encrypted);
+
+      const tx = await contract.addproduct(Data.productName, encrypted);
+      await tx.wait();
+
+      alert("Hash added successfully!");
+    } catch (err) {
+      console.error("Error adding hash:", err);
+    }
+  };
+
+  // ✅ Verify / get hash (simplified)
+  const handleGetHash = async () => {
+    try {
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+      const provider = new ethers.providers.JsonRpcProvider(
+        process.env.NEXT_PUBLIC_RPC_URL
+      );
+      const contract = new ethers.Contract(
+        process.env.NEXT_PUBLIC_ADDRESS,
+        ProductFactory.abi,
+        provider
+      );
+
+      const filter = contract.filters.productcreated(Data.productName);
+      const logs = await contract.queryFilter(filter);
+
+      if (logs.length > 0) {
+        setFound(true);
+      } else {
+        setFound(false);
+      }
+    } catch (err) {
+      console.error("Error fetching hash:", err);
+    }
+  };
+
+  return (
+    <div className="bg-[#14161a] h-screen flex flex-col items-center p-4 text-white">
+      <h1 className="text-[6vw] md:text-[3vw] mt-8">{Data.productName}</h1>
+
+      <div className="mt-8 flex flex-col items-center space-y-3">
+        <input
+          type="text"
+          placeholder="Enter hash"
+          value={hash}
+          onChange={(e) => setHash(e.target.value)}
+          className="p-2 w-[80vw] md:w-[40vw] rounded bg-[#212631] text-white"
+        />
+        <button
+          onClick={handleAddHash}
+          className="bg-[#f44336] px-4 py-2 rounded hover:bg-[#d32f2f]"
+        >
+          Add Hash
+        </button>
+      </div>
+
+      {encryptedHash && (
+        <div className="mt-4 text-sm break-words w-[80vw] md:w-[40vw] bg-[#191b21] p-2 rounded">
+          Encrypted Hash: {encryptedHash}
+        </div>
+      )}
+
+      <button
+        onClick={handleGetHash}
+        className="mt-6 bg-[#007bff] px-4 py-2 rounded hover:bg-[#0056b3]"
+      >
+        Get Hash
+      </button>
+
+      {found && (
+        <div className="mt-6 bg-[#191b21] p-4 rounded w-[80vw] md:w-[40vw] text-center">
+          {data.map((d, i) => (
+            <p key={i} className="break-words text-sm">{d}</p>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Static methods remain same
+export async function getStaticPaths() {
+  const provider = new ethers.providers.JsonRpcProvider(
+    process.env.NEXT_PUBLIC_RPC_URL
+  );
+  const contract = new ethers.Contract(
+    process.env.NEXT_PUBLIC_ADDRESS,
+    ProductFactory.abi,
+    provider
+  );
+  const filter = contract.filters.productcreated();
+  const allProducts = await contract.queryFilter(filter);
+
+  return {
+    paths: allProducts.map((e) => ({
+      params: { address: e.args.productaddress.toString() },
+    })),
+    fallback: "blocking",
+  };
+}
+
+export async function getStaticProps(context) {
+  const provider = new ethers.providers.JsonRpcProvider(
+    process.env.NEXT_PUBLIC_RPC_URL
+  );
+  const contract = new ethers.Contract(
+    context.params.address,
+    Product.abi,
+    provider
+  );
+
+  const productName = await contract.ProductName();
+  const ImageUri = await contract.ImageUri();
+
+  return {
+    props: {
+      Data: {
+        productName,
+        ImageUri,
+        address: context.params.address,
+      },
+    },
+    revalidate: 10,
+  };
+}
+
+export default Detail;
