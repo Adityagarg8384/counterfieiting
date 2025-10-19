@@ -1,5 +1,4 @@
 // store/userSlice.js
-import { useAuth } from "@clerk/nextjs";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -15,7 +14,6 @@ const userSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
 
-      const getToken= useAuth()
       state.user = action.payload;
 
       console.log("User role:", action.payload?.publicMetadata);
