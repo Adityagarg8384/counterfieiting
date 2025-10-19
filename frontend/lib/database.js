@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 const MONGO_URI= process.env.MONGO_URI;
 
 const dbconnect = async () => {
-  await mongoose.connect(NEXT_PUBLIC_MONGO_URI)
+  await mongoose.connect(MONGO_URI)
     .then(() => {
       console.log("Connection has been made successfully");
     })
