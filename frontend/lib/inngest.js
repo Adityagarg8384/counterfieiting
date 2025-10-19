@@ -2,9 +2,12 @@ import { Inngest } from "inngest";
 import dbconnect from "./database";
 import User from "./models";
 
+console.log("🔑 INNGEST_SIGNING_KEY Loaded:", process.env.INGEST_SIGN_KEY ? "✅ Present" : "❌ Missing");
+
+
 export const inngest = new Inngest({
   id: "Counterfiet",
-  signingKey: process.env.INGEST_SIGN_KEY,
+  signingKey: process.env.NEXT_PUBLIC_INGEST_SIGN_KEY,
 });
 
 export const syncUserCreation= inngest.createFunction(

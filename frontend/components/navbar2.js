@@ -1,4 +1,4 @@
-"use client"
+// "use client"
 import React, { useEffect } from "react";
 import { assets, BagIcon, CartIcon } from "../assets/assets";
 import Link from "next/link";
@@ -25,6 +25,7 @@ const Navbar2 = () => {
   const {getToken}= useAuth();
 
   useEffect(() => {
+
     if (isSignedIn && clerkUser) {
       console.log("The value of isSeller before dispatch:", isSeller);
       if(clerkUser.publicMetadata?.role==="seller"){
