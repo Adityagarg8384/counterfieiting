@@ -1,10 +1,13 @@
 import React from "react";
 import ProductCard from "./productcard";
-import { useAppContext } from "@/context/AppContext";
+// import { useAppContext } from "@/context/AppContext";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
 const HomeProducts = () => {
-
-  const { products, router } = useAppContext()
+  const products = useSelector((state) => state.products.products);
+  // const { products, router } = useAppContext()
+  const router = useRouter();
 
   return (
     <div className="flex flex-col items-center pt-14">

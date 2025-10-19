@@ -1,11 +1,15 @@
 import React from 'react'
 import { assets } from '@/assets/assets'
 import Image from 'next/image';
-import { useAppContext } from '@/context/AppContext';
+// import { useAppContext } from '@/context/AppContext';
+import { useSelector } from "react-redux";
+import { useRouter } from 'next/router';
 
 const ProductCard = ({ product }) => {
 
-    const { currency, router } = useAppContext()
+    const router= useRouter();
+    // const { currency, router } = useAppContext()
+    const currency = useSelector((state) => state.products.currency);
 
     return (
         <div

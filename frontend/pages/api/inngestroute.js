@@ -1,4 +1,4 @@
-import { inngest,syncUserCreation, syncUserUpdation } from "@/lib/inngest";
+import { inngest,syncUserCreation, syncUserUpdation, syncUserDeletion } from "@/lib/inngest";
 
 import { serve } from "inngest/next";
 

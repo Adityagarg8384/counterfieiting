@@ -2,30 +2,62 @@
 import React, { useEffect } from "react";
 import { assets, BagIcon, CartIcon } from "../assets/assets";
 import Link from "next/link";
-import { useAppContext } from "@/context/AppContext";
+// import { useAppContext } from "@/context/AppContext";
 import Image from "next/image";
-import { useClerk, UserButton, useUser } from "@clerk/nextjs";
+import { useRouter } from "next/router";
+import { useClerk, UserButton, useUser, useAuth } from "@clerk/nextjs";
 import { useSelector, useDispatch } from "react-redux";
-import { setUser, clearUser } from "@/redux/slice";
+import { setUser, clearUser, setIsSeller, setGetToken } from "@/redux/userslice";
+import { fetchUserData } from "@/lib/fetchuserdata";
+import { get } from "mongoose";
 // import { UserButton } from "@clerk/nextjs";
 
 const Navbar2 = () => {
+  const router= useRouter();
+
   const user = useSelector((state) => state.user.user);
+  const isSeller = useSelector((state) => state.user.isSeller);
   const dispatch = useDispatch();
-  const { isSeller, router } = useAppContext();
   const { openSignIn } = useClerk();
   
-  // useUser hook from Clerk gives info about the signed-in user
   const { user: clerkUser, isSignedIn } = useUser();
 
-  // Update Redux state when Clerk user changes
+  const {getToken}= useAuth();
+
   useEffect(() => {
     if (isSignedIn && clerkUser) {
-      dispatch(setUser(clerkUser.firstName || clerkUser.username));
+      console.log("The value of isSeller before dispatch:", isSeller);
+      if(clerkUser.publicMetadata?.role==="seller"){
+        dispatch(setIsSeller(true));
+      }
+
+
+      if(getToken){
+        dispatch(setGetToken(getToken)); 
+      }
+
+      if(!user){
+        dispatch(setUser(clerkUser.firstName || clerkUser.username));
+      }
+
     } else {
       dispatch(clearUser());
     }
-  }, [clerkUser, isSignedIn, dispatch]);
+  }, [clerkUser, isSignedIn, dispatch, user, isSeller, getToken]);
+
+//   useEffect(() => {
+//     const fetchCart = async () => {
+//       const token = await getToken();
+
+//       const data= await fetchUserData(token);
+//       console.log("Data is ", data);
+//       if(!data){
+//         console.log(data);
+//       }
+//     };
+
+//   fetchCart();
+// }, [user]);
 
   return (
     <nav className="flex items-center justify-between px-6 md:px-16 lg:px-32 py-3 border-b border-gray-300 text-gray-700">
