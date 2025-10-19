@@ -25,6 +25,8 @@ const Navbar2 = () => {
   const {getToken}= useAuth();
 
   useEffect(() => {
+    // console.log("🔑 INNGEST_SIGNING_KEY Loaded:", process.env.NEXT_PUBLIC_INGEST_SIGN_KEY ? "✅ Present" : "❌ Missing");
+    // console.log("🔑 INNGEST_SIGNING_KEY Loaded:", process.env.NEXT_PUBLIC_MONGO_URI);
 
     if (isSignedIn && clerkUser) {
       console.log("The value of isSeller before dispatch:", isSeller);
