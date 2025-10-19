@@ -2,7 +2,10 @@ import { Inngest } from "inngest";
 import dbconnect from "./database";
 import User from "./models";
 
-export const inngest = new Inngest({ id: "Counterfiet" });
+export const inngest = new Inngest({
+  id: "Counterfiet",
+  signingKey: process.env.INGEST_SIGN_KEY,
+});
 
 export const syncUserCreation= inngest.createFunction(
     {
